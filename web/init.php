@@ -90,14 +90,14 @@ if (!file_exists(ROOT.'/config.php') || !include_once(ROOT . '/config.php')) {
         die();
     }
 }
-if (!defined("DEVELOPER_MODE") && !defined("IS_UPDATE") && file_exists(ROOT."/install")) {
+if (!defined("IS_UPDATE") && file_exists(ROOT."/install")) {
     if ($_SERVER['HTTP_HOST'] != "localhost") {
         echo "Please delete the install directory before you use SourceBans";
         die();
     }
 }
 
-if (!defined("DEVELOPER_MODE") && !defined("IS_UPDATE") && file_exists(ROOT."/updater")) {
+if (!defined("IS_UPDATE") && file_exists(ROOT."/updater")) {
     if ($_SERVER['HTTP_HOST'] != "localhost") {
         echo "Please delete the updater directory before using SourceBans";
         die();
@@ -152,20 +152,6 @@ require_once(INCLUDES_PATH.'/Database.php');
 $GLOBALS['PDO'] = new Database(DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS, DB_PREFIX, DB_CHARSET);
 $GLOBALS['log'] = new CSystemLog();
 $GLOBALS['sb-email'] = SB_EMAIL;
-
-if (!is_object($GLOBALS['db'])) {
-    die();
-}
-
-$GLOBALS['db']->Execute("SET NAMES ".DB_CHARSET.";");
-
-$mysql_server_info = $GLOBALS['db']->ServerInfo();
-$GLOBALS['db_version'] = $mysql_server_info['version'];
-
-$debug = $GLOBALS['db']->Execute("SELECT value FROM `".DB_PREFIX."_settings` WHERE setting = 'config.debug';");
-if ($debug->fields['value']=="1") {
-    define("DEVELOPER_MODE", true);
-}
 
 require_once(INCLUDES_PATH.'/SteamID/bootstrap.php');
 \SteamID\SteamID::init($GLOBALS['PDO']);
@@ -281,7 +267,6 @@ define('SM_CUSTOM4', "r");
 define('SM_CUSTOM5', "s");
 define('SM_CUSTOM6', "t");
 
-
 define('ALL_WEB', ADMIN_LIST_ADMINS|ADMIN_ADD_ADMINS|ADMIN_EDIT_ADMINS|ADMIN_DELETE_ADMINS|ADMIN_LIST_SERVERS|ADMIN_ADD_SERVER|
                   ADMIN_EDIT_SERVERS|ADMIN_DELETE_SERVERS|ADMIN_ADD_BAN|ADMIN_EDIT_OWN_BANS|ADMIN_EDIT_GROUP_BANS|
                   ADMIN_EDIT_ALL_BANS|ADMIN_BAN_PROTESTS|ADMIN_BAN_SUBMISSIONS|ADMIN_LIST_GROUPS|ADMIN_ADD_GROUP|ADMIN_EDIT_GROUPS|
@@ -291,17 +276,16 @@ define('ALL_WEB', ADMIN_LIST_ADMINS|ADMIN_ADD_ADMINS|ADMIN_EDIT_ADMINS|ADMIN_DEL
 define('ALL_SERVER', SM_RESERVED_SLOT.SM_GENERIC.SM_KICK.SM_BAN.SM_UNBAN.SM_SLAY.SM_MAP.SM_CVAR.SM_CONFIG.SM_VOTE.SM_PASSWORD.SM_RCON.
                      SM_CHEATS.SM_CUSTOM1.SM_CUSTOM2.SM_CUSTOM3. SM_CUSTOM4.SM_CUSTOM5.SM_CUSTOM6.SM_ROOT);
 
-$res = $GLOBALS['db']->Execute("SELECT * FROM ".DB_PREFIX."_settings GROUP BY `setting`, `value`");
-$GLOBALS['config'] = array();
-while (!$res->EOF) {
-    $setting = array($res->fields['setting'] => $res->fields['value']);
-    $GLOBALS['config'] = array_merge_recursive($GLOBALS['config'], $setting);
-    $res->MoveNext();
+
+$GLOBALS['PDO']->query("SELECT * FROM `:prefix_settings`");
+foreach ($GLOBALS['PDO']->resultset() as $dataset) {
+    $GLOBALS['config'][$dataset['setting']] = $dataset['value'];
 }
 
+define("DEVELOPER_MODE", $GLOBALS['config']['config.debug']);
 define('SB_BANS_PER_PAGE', $GLOBALS['config']['banlist.bansperpage']);
 define('MIN_PASS_LENGTH', $GLOBALS['config']['config.password.minlength']);
-$dateformat = !empty($GLOBALS['config']['config.dateformat'])?$GLOBALS['config']['config.dateformat']:"m-d-y H:i";
+$dateformat = !empty($GLOBALS['config']['config.dateformat']) ? $GLOBALS['config']['config.dateformat'] : "m-d-y H:i";
 
 // ---------------------------------------------------
 // Setup our templater
