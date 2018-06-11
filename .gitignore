@@ -47,6 +47,6 @@ Temporary Items
 
 # SourceBans++
 /web/config.php
-/web/themes_c/*.php
-/web/themes_c/*.tmp
+/web/cache/*.php
+/web/cache/*.tmp
 *.smx

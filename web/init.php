@@ -49,7 +49,7 @@ define('SB_ICONS', ROOT . SB_ICON_LOCATION);
 define('SB_DEMOS', ROOT . SB_DEMO_LOCATION);
 
 define('SB_THEMES', ROOT . 'themes/');
-define('SB_THEMES_COMPILE', ROOT . 'themes_c/');
+define('SB_CACHE', ROOT . 'cache/');
 
 define('IN_SB', true);
 define('SB_AID', isset($_COOKIE['aid'])?$_COOKIE['aid']:null);
@@ -324,8 +324,8 @@ define('SB_THEME', $theme_name);
 if (!@file_exists(SB_THEMES . $theme_name . "/theme.conf.php")) {
     die("Theme Error: <b>".$theme_name."</b> is not a valid theme. Must have a valid <b>theme.conf.php</b> file.");
 }
-if (!@is_writable(SB_THEMES_COMPILE)) {
-    die("Theme Error: <b>".SB_THEMES_COMPILE."</b> MUST be writable.");
+if (!@is_writable(SB_CACHE)) {
+    die("Theme Error: <b>".SB_CACHE."</b> MUST be writable.");
 }
 
 $theme = new Smarty();
@@ -334,7 +334,7 @@ $theme->use_sub_dirs = false;
 $theme->compile_id = $theme_name;
 $theme->caching = false;
 $theme->template_dir = SB_THEMES . $theme_name;
-$theme->compile_dir = SB_THEMES_COMPILE;
+$theme->compile_dir = SB_CACHE;
 
 if ((isset($_GET['debug']) && $_GET['debug'] == 1) || defined("DEVELOPER_MODE")) {
     $theme->force_compile = true;
