@@ -1,28 +1,26 @@
 <?php
-include_once("init.php");
-$exportpublic = (isset($GLOBALS['config']['config.exportpublic']) && $GLOBALS['config']['config.exportpublic'] == "1");
-if (!$userbank->HasAccess(ADMIN_OWNER) && !$exportpublic) {
-    echo "Don't have access to this feature.";
-} else if (!isset($_GET['type'])) {
-    echo "You have to specify the type. Only follow links!";
-} else {
-    if ($_GET['type'] == 'steam') {
-        header('Content-Type: application/x-httpd-php php');
-        header('Content-Disposition: attachment; filename="banned_user.cfg"');
-        $bans = $GLOBALS['db']->Execute("SELECT authid FROM `" . DB_PREFIX . "_bans` WHERE length = '0' AND RemoveType IS NULL AND type = '0'");
-        $num  = $bans->RecordCount();
-        for ($x = 0; $x < $num; $x++) {
-            print("banid 0 " . $bans->fields['authid'] . "\r\n");
-            $bans->MoveNext();
-        }
-    } elseif ($_GET['type'] == 'ip') {
-        header('Content-Type: application/x-httpd-php php');
-        header('Content-Disposition: attachment; filename="banned_ip.cfg"');
-        $bans = $GLOBALS['db']->Execute("SELECT ip FROM `" . DB_PREFIX . "_bans` WHERE length = '0' AND RemoveType IS NULL AND type = '1'");
-        $num  = $bans->RecordCount();
-        for ($x = 0; $x < $num; $x++) {
-            print("addip 0 " . $bans->fields['ip'] . "\r\n");
-            $bans->MoveNext();
-        }
-    }
+require_once('init.php');
+
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
+
+if (!$userbank->HasAccess(ADMIN_OWNER) && !$GLOBALS['config']['config.exportpublic']) {
+    die("You don't have access to this feature.");
+} elseif (is_null($type)) {
+    die('Parameter "type" not set.');
+}
+
+if ($type === 'steam') {
+    $file = 'banned_user.cfg';
+    $cmd = 'banid';
+    $GLOBALS['PDO']->query("SELECT authid AS id FROM `:prefix_bans` WHERE length = 0 AND RemoveType IS NULL AND type = 0");
+} elseif ($type === 'ip') {
+    $file = 'banned_ip.cfg';
+    $cmd = 'addip';
+    $GLOBALS['PDO']->query("SELECT ip AS id FROM `:prefix_bans` WHERE length = 0 AND RemoveType IS NULL AND type = 1");
+}
+
+header('Content-Type: application/x-httpd-php php');
+header('Content-Disposition: attachment; filename="'.$file.'"');
+foreach ($GLOBALS['PDO']->resultset() as $ban) {
+    print "$cmd 0 $ban[id] \r\n";
 }
