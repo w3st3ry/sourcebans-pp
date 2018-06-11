@@ -311,9 +311,9 @@ $dateformat = !empty($GLOBALS['config']['config.dateformat'])?$GLOBALS['config']
 // ---------------------------------------------------
 // Setup our templater
 // ---------------------------------------------------
-require(INCLUDES_PATH . '/smarty/Smarty.class.php');
-
-global $theme, $userbank;
+require_once(INCLUDES_PATH.'/Mustache/Autoloader.php');
+require_once(INCLUDES_PATH.'/Template.php');
+Mustache_Autoloader::register();
 
 $theme_name = isset($GLOBALS['config']['config.theme'])?$GLOBALS['config']['config.theme']:'default';
 if (defined("IS_UPDATE")) {
@@ -321,24 +321,17 @@ if (defined("IS_UPDATE")) {
 }
 define('SB_THEME', $theme_name);
 
-if (!@file_exists(SB_THEMES . $theme_name . "/theme.conf.php")) {
-    die("Theme Error: <b>".$theme_name."</b> is not a valid theme. Must have a valid <b>theme.conf.php</b> file.");
+if (!@file_exists(SB_THEMES . SB_THEME . "/theme.conf.php")) {
+    die("Theme Error: <b>".SB_THEME."</b> is not a valid theme. Must have a valid <b>theme.conf.php</b> file.");
 }
 if (!@is_writable(SB_CACHE)) {
     die("Theme Error: <b>".SB_CACHE."</b> MUST be writable.");
 }
 
-$theme = new Smarty();
-$theme->error_reporting = E_ALL ^ E_NOTICE;
-$theme->use_sub_dirs = false;
-$theme->compile_id = $theme_name;
-$theme->caching = false;
-$theme->template_dir = SB_THEMES . $theme_name;
-$theme->compile_dir = SB_CACHE;
-
-if ((isset($_GET['debug']) && $_GET['debug'] == 1) || defined("DEVELOPER_MODE")) {
-    $theme->force_compile = true;
-}
+Template::init(new Mustache_Engine([
+    'cache' => SB_CACHE,
+    'loader' => new Mustache_Loader_FilesystemLoader(SB_THEMES.SB_THEME."/templates")
+]));
 // ---------------------------------------------------
 // Setup our user manager
 // ---------------------------------------------------
