@@ -1,28 +1,3 @@
-// *************************************************************************
-//  This file is part of SourceBans++.
-//
-//  Copyright (C) 2014-2016 SourceBans++ Dev Team <https://github.com/sbpp>
-//
-//  SourceBans++ is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, per version 3 of the License.
-//
-//  SourceBans++ is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with SourceBans++. If not, see <http://www.gnu.org/licenses/>.
-//
-//  This file based off work(s) covered by the following copyright(s):
-//
-//   SourceComms 0.9.266
-//   Copyright (C) 2013-2014 Alexandr Duplishchev
-//   Licensed under GNU GPL version 3, or later.
-//   Page: <https://forums.alliedmods.net/showthread.php?p=1883705> - <https://github.com/d-ai/SourceComms>
-//
-// *************************************************************************
 
 #if defined _sourcecomms_included
 #endinput
@@ -110,7 +85,7 @@ forward SourceComms_OnBlockAdded(client, target, time, type, String:reason[]);
 public SharedPlugin:__pl_sourcecomms =
 {
 	name = "sourcecomms++",
-	file = "sbpp_comms.smx", 
+	file = "sbpp_comms.smx",
 	#if defined REQUIRE_PLUGIN
 	required = 1
 	#else
