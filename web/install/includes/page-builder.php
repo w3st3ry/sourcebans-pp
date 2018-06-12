@@ -29,7 +29,10 @@ function route()
 
 function build($title, $step)
 {
-    Template::render('core/header', ['title' => $title]);
+    Template::render('core/header', [
+        'title' => $title,
+        'steps' => getSteps($step)
+    ]);
     Template::render('core/navbar');
     Template::render('core/content.header', ['title' => $title]);
     //require_once(ROOT."/pages/page.$step.php");

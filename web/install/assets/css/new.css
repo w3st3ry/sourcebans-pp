@@ -20,6 +20,13 @@ header {
     align-items: center;
 }
 
+header div {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
 nav {
     background-color: #38322c;
     display: flex;

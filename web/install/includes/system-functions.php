@@ -4,6 +4,32 @@ function HelpIcon($title, $text)
     return '<img border="0" align="absbottom" src="images/admin/help.png" class="tip" title="' .  $title . ' :: ' .  $text . '">&nbsp;&nbsp;';
 }
 
+function getSteps($step)
+{
+    $steps = [
+        1 => 'License Agreement',
+        2 => 'Database Information',
+        3 => 'System Requirements',
+        4 => 'Table Creation',
+        5 => 'Initial Setup'
+    ];
+
+    foreach ($steps as $key => $value) {
+        $str = "Step $key: $value";
+
+        switch (true) {
+            case $key == $step:
+                $str = "<b>$str</b>";
+                break;
+            case $key < $step:
+                $str = "<strike>$str</strike>";
+                break;
+        }
+        $out[] = $str;
+    }
+    return $out;
+}
+
 function CreateQuote()
 {
     $quotes = [
