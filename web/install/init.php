@@ -17,8 +17,14 @@ error_reporting(-1);
 
 require_once(SBPP.'/includes/Database.php');
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+require_once(SBPP.'/includes/Mustache/Autoloader.php');
+require_once(SBPP.'/includes/Template.php');
+Mustache_Autoloader::register();
+
+Template::init(new Mustache_Engine([
+    'cache' => ROOT.'/cache',
+    'loader' => new Mustache_Loader_FilesystemLoader(ROOT.'/templates')
+]));
 
 // Create a blank config file
 if (!file_exists("../config.php") && is_writable('../')) {
