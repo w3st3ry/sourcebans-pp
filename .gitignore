@@ -49,4 +49,6 @@ Temporary Items
 /web/config.php
 /web/cache/*.php
 /web/cache/*.tmp
+/web/install/cache/*.php
+/web/install/cache/*.tmp
 *.smx
