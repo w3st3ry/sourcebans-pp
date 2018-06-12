@@ -1,39 +1,40 @@
 <?php
 
-$_GET['step'] = isset($_GET['step']) ? $_GET['step'] : '1';
+function route()
+{
+    $options = [
+        'options' => [
+            'min_range' => 1,
+            'max_range' => 6,
+            'default' => 1
+        ]
+    ];
+    $step = filter_input(INPUT_GET, 'step', FILTER_VALIDATE_INT, $options);
 
-switch ($_GET['step']) {
-    case "6":
-        RewritePageTitle("Step 6 - AMXBans Import");
-        $page = TEMPLATES_PATH . "/page.6.php";
-        break;
-    case "5":
-        RewritePageTitle("Step 5 - Setup");
-        $page = TEMPLATES_PATH . "/page.5.php";
-        break;
-    case "4":
-        RewritePageTitle("Step 4 - Table Creation");
-        $page = TEMPLATES_PATH . "/page.4.php";
-        break;
-    case "3":
-        RewritePageTitle("Step 3 - System Requirements Check");
-        $page = TEMPLATES_PATH . "/page.3.php";
-        break;
-    case "2":
-        RewritePageTitle("Step 2 - Database Details");
-        $page = TEMPLATES_PATH . "/page.2.php";
-        break;
-    default:
-        RewritePageTitle("Step 1 - License agreement");
-        $page = TEMPLATES_PATH . "/page.1.php";
-        break;
+    switch ($step) {
+        case 6:
+            return ['AMXBans Import', $step];
+        case 5:
+            return ['Initial Setup', $step];
+        case 4:
+            return ['Table Creation', $step];
+        case 3:
+            return ['System Requirements Check', $step];
+        case 2:
+            return ['Database Details', $step];
+        default:
+            return ['License Agreement', $step];
+    }
 }
 
-require_once(TEMPLATES_PATH . "/header.php");
-BuildPageTabs();
-BuildSubMenu();
-BuildContHeader();
-if (!empty($page)) {
-    include $page;
+function build($title, $step)
+{
+    Template::render('core/header', ['title' => $title]);
+    Template::render('core/navbar');
+    Template::render('core/content.header', ['title' => $title]);
+    //require_once(ROOT."/pages/page.$step.php");
+    Template::render('core/footer', [
+        'version' => SB_VERSION,
+        'quote' => CreateQuote()
+    ]);
 }
-include_once(TEMPLATES_PATH . '/footer.php');

@@ -1,6 +1,8 @@
 <?php
+require_once('init.php');
+require_once(INCLUDES_PATH.'/system-functions.php');
+require_once(INCLUDES_PATH.'/page-builder.php');
 
-include_once 'init.php';
-include_once(INCLUDES_PATH . "/user-functions.php");
-include_once(INCLUDES_PATH . "/system-functions.php");
-include_once(INCLUDES_PATH . "/page-builder.php");
+ob_start();
+[$title, $step] = route();
+build($title, $step);
