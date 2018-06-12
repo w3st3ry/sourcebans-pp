@@ -13,7 +13,10 @@ define('SB_VERSION', '1.7.0');
 ini_set('display_errors', 1);
 error_reporting(-1);
 
-//TODO: add timezone check
+//Default to UTC if no timezone is set in php.ini
+if (!ini_get('date.timezone')) {
+    date_default_timezone_set('UTC');
+}
 
 require_once(SBPP.'/includes/Database.php');
 

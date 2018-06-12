@@ -34,6 +34,11 @@ include_once(INCLUDES_PATH . "/CUserManager.php");
 
 \SessionManager::sessionStart('SourceBans');
 
+//Default to UTC if no timezone is set in php.ini
+if (!ini_get('date.timezone')) {
+    date_default_timezone_set('UTC');
+}
+
 // ---------------------------------------------------
 //  Fix some $_SERVER vars
 // ---------------------------------------------------
