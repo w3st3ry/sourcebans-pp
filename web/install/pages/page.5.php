@@ -1,8 +1,4 @@
 <?php
-if (!defined("IN_SB")) {
-    echo "You should not be here. Only follow links!";
-    die();
-}
 
 $web_cfg = "<?php
 /**
@@ -64,7 +60,7 @@ $srv_cfg = str_replace("{db}", $_POST['database'], $srv_cfg);
 $srv_cfg = str_replace("{port}", $_POST['port'], $srv_cfg);
 
 if (is_writable("../config.php")) {
-    $config = fopen(ROOT . "../config.php", "w");
+    $config = fopen(SBPP.'/config.php', "w");
     fwrite($config, $web_cfg);
     fclose($config);
 }
@@ -73,7 +69,6 @@ if (isset($_POST['postd']) && $_POST['postd']) {
     if (empty($_POST['uname']) ||empty($_POST['pass1']) ||empty($_POST['pass2'])||empty($_POST['steam'])||empty($_POST['email'])) {
         echo "<script>ShowBox('Error', 'There is some missing data. All fields are required.', 'red', '', true);</script>";
     } else {
-        require_once(ROOT.'../includes/Database.php');
         $db = new Database($_POST['server'], $_POST['port'], $_POST['database'], $_POST['username'], $_POST['password'], $_POST['prefix']);
         if (!$db) {
             echo "<script>ShowBox('Error', 'There was an error connecting to your database. <br />Recheck the details to make sure they are correct', 'red', '', true);</script>";
