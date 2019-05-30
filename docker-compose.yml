@@ -1,0 +1,42 @@
+version: '3.5'
+
+services:
+  sbpp:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    hostname: sbpp
+    environment:
+      # Set to true of you need to `install` sbpp
+      SBPP_INSTALL: "true"
+      # Set to false of you need to `update` sbpp
+      SBPP_UPDATE: "false"
+    depends_on: 
+      - mariadb
+    networks:
+      - traefik
+    volumes:
+      # To persist data on local disk
+      - ./data/sbpp:/app
+    ports:
+      - "80:80"
+    restart: on-failure
+
+  mariadb:
+    image: mariadb:10.4.5
+    hostname: mariadb
+    environment: 
+      MYSQL_ROOT_PASSWORD: chanegmeplease
+      MYSQL_DATABASE: chanegmeplease
+      MYSQL_USER: chanegmeplease
+      MYSQL_PASSWORD: chanegmeplease
+    networks:
+      - traefik
+    volumes:
+      # To persist data on local disk
+      - ./data/mysql:/var/lib/mysql
+    restart: on-failure
+
+networks:
+  traefik:
+    external: true
